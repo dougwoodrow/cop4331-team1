@@ -1,0 +1,14 @@
+version: '2'
+services:
+    cop4331-app:
+        image: cop4331
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATASOURCE_URL=jdbc:mysql://cop4331-mysql:3306/cop4331?useUnicode=true&characterEncoding=utf8&useSSL=false
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+        ports:
+            - 8080:8080
+    cop4331-mysql:
+        extends:
+            file: mysql.yml
+            service: cop4331-mysql
