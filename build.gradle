@@ -177,6 +177,11 @@ dependencies {
     compile "io.springfox:springfox-bean-validators:${springfox_version}"
     compile "mysql:mysql-connector-java"
     compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
+
+    // User added
+    compile 'com.google.maps:google-maps-services:0.2.4'
+    compile 'org.slf4j:slf4j-nop:1.7.25'
+
     testCompile "org.awaitility:awaitility:${awaitility_version}"
     testCompile "com.jayway.jsonpath:json-path"
     testCompile ("org.springframework.boot:spring-boot-starter-test") {
