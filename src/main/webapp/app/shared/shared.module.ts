@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import {AgmCoreModule} from '@agm/core';
 
 import {
     Cop4331SharedLibsModule,

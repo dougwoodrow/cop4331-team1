@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { JhiEventManager } from 'ng-jhipster';
+import {Component, OnInit} from '@angular/core';
+import {JhiEventManager} from 'ng-jhipster';
 
-import { Account, LoginService, Principal } from '../shared';
+import {Account, LoginService, Principal} from '../shared';
 
 @Component({
     selector: 'jhi-home',
@@ -13,12 +13,12 @@ import { Account, LoginService, Principal } from '../shared';
 })
 export class HomeComponent implements OnInit {
     account: Account;
+    lat = 28.5354336;
+    lng = -81.4034221;
 
-    constructor(
-        private principal: Principal,
-        private loginService: LoginService,
-        private eventManager: JhiEventManager
-    ) {
+    constructor(private principal: Principal,
+                private loginService: LoginService,
+                private eventManager: JhiEventManager) {
     }
 
     ngOnInit() {
