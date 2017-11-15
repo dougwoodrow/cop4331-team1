@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Principal } from '../auth/principal.service';
-import { AuthServerProvider } from '../auth/auth-oauth2.service';
+import { AuthServerProvider } from '../auth/auth-session.service';
 
 @Injectable()
 export class LoginService {
@@ -11,21 +11,12 @@ export class LoginService {
         private authServerProvider: AuthServerProvider
     ) {}
 
-    login(credentials, callback?) {
-        const cb = callback || function() {};
-
-        return new Promise((resolve, reject) => {
-            this.authServerProvider.login(credentials).subscribe((data) => {
-                this.principal.identity(true).then((account) => {
-                    resolve(data);
-                });
-                return cb();
-            }, (err) => {
-                this.logout();
-                reject(err);
-                return cb(err);
-            });
-        });
+    login() {
+        let port = (location.port ? ':' + location.port : '');
+        if (port === ':9000') {
+            port = ':8080';
+        }
+        location.href = '//' + location.hostname + port + '/login';
     }
 
     logout() {

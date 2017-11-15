@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "edu.cop4331.bustracker"
     },
-    "jhipsterVersion": "4.8.2",
+    "jhipsterVersion": "4.10.2",
     "baseName": "cop4331",
     "packageName": "edu.cop4331.bustracker",
     "packageFolder": "edu/cop4331/bustracker",

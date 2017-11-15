@@ -12,7 +12,7 @@ import java.util.Map;
  * @see org.springframework.boot.actuate.audit.AuditEvent
  */
 @Entity
-@Table(name = "persistent_audit_event")
+@Table(name = "jhi_persistent_audit_event")
 public class PersistentAuditEvent implements Serializable {
 
     @Id
