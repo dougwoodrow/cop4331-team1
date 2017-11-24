@@ -2,6 +2,7 @@ package edu.cop4331.bustracker.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import edu.cop4331.bustracker.service.GoogleMapsService;
+import edu.cop4331.bustracker.service.dto.ResponseDTO;
 import edu.cop4331.bustracker.service.dto.RouteDTO;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
@@ -12,12 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
+
 @RestController
 @RequestMapping("/api")
 public class RouteResource {
 
     private final Logger log = LoggerFactory.getLogger(RouteResource.class);
 
+    @Inject
     private GoogleMapsService googleMapsService;
 
     public RouteResource(GoogleMapsService googleMapsService) {
@@ -33,9 +37,11 @@ public class RouteResource {
      */
     @PostMapping("/routes")
     @Timed
-    public ResponseEntity<RouteDTO> getAllUsers(@ApiParam String to, @ApiParam String from) {
-        final RouteDTO routeDTO = googleMapsService.getRoute(to, from);
-        return new ResponseEntity<>(routeDTO, HttpStatus.OK);
+    public ResponseEntity<ResponseDTO> getRoute(@ApiParam String to, @ApiParam String from) {
+        RouteDTO routeDTO = googleMapsService.getBusRoute(to, from);
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(routeDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
 }
