@@ -1,3 +1,10 @@
-<agm-map [latitude]="lat" [longitude]="lng">
-    <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+<agm-map [latitude]="route.startLocation.lat" [longitude]="route.startLocation.lng" [zoom]="12">
+    <agm-marker *ngIf="route.startAddress !== ''" [latitude]="route.startLocation.lat"
+                [longitude]="route.startLocation.lng"></agm-marker>
+    <agm-marker *ngIf="route.endAddress !== ''" [latitude]="route.endLocation.lat"
+                [longitude]="route.endLocation.lng"></agm-marker>
+    <agm-polyline>
+        <agm-polyline-point *ngFor="let point of route.busLinePath" [latitude]="point.lat" [longitude]="point.lng">
+        </agm-polyline-point>
+    </agm-polyline>
 </agm-map>

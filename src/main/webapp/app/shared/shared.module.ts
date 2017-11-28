@@ -10,6 +10,7 @@ import {
     AccountService,
     UserService,
     StateStorageService,
+    RouteService,
     LoginService,
     Principal,
     HasAnyAuthorityDirective,
@@ -31,6 +32,7 @@ import {
         CSRFService,
         AuthServerProvider,
         UserService,
+        RouteService,
         DatePipe
     ],
     exports: [

@@ -7,12 +7,16 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
 import edu.cop4331.bustracker.service.dto.RouteDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 @Service
 public class GoogleMapsService {
+
+    private final Logger log = LoggerFactory.getLogger(GoogleMapsService.class);
 
     private GeoApiContext context;
 
@@ -38,8 +42,12 @@ public class GoogleMapsService {
             routeDTO.setStartAddress(directionsResult.routes[0].legs[0].startAddress);
             routeDTO.setEndLocation(directionsResult.routes[0].legs[0].endLocation);
             routeDTO.setStartLocation(directionsResult.routes[0].legs[0].startLocation);
-            routeDTO.setFare("$" + directionsResult.routes[0].fare.value.toString());
+            if(directionsResult.routes[0].fare != null) {
+                routeDTO.setFare("$" + directionsResult.routes[0].fare.value.toString());
+            }
             return routeDTO;
+        } catch (ArrayIndexOutOfBoundsException aiofbe) {
+            log.error("No route is available for the requested parameters");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {

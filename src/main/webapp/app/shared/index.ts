@@ -13,6 +13,8 @@ export * from './login/login.service';
 export * from './user/account.model';
 export * from './user/user.model';
 export * from './user/user.service';
+export * from './route/route.model';
+export * from './route/route.service';
 export * from './model/response-wrapper.model';
 export * from './model/request-util';
 export * from './model/base-entity';

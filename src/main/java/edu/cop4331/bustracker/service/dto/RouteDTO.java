@@ -1,23 +1,21 @@
 package edu.cop4331.bustracker.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.LatLng;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 /**
  * A DTO representing a route.
  */
 public class RouteDTO {
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private DateTime arrivalDateTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private DateTime departureDateTime;
 
-    private EncodedPolyline busLinePath;
+    private List<LatLng> busLinePath;
 
     private LatLng startLocation;
 
@@ -35,7 +33,7 @@ public class RouteDTO {
     public RouteDTO(DateTime arrivalDateTime, DateTime departureDateTime, EncodedPolyline busLinePath, LatLng startLocation, LatLng endLocation, String startAddress, String endAddress, String fare) {
         this.arrivalDateTime = arrivalDateTime;
         this.departureDateTime = departureDateTime;
-        this.busLinePath = busLinePath;
+        this.busLinePath = busLinePath.decodePath();
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.startAddress = startAddress;
@@ -59,12 +57,12 @@ public class RouteDTO {
         this.departureDateTime = departureDateTime;
     }
 
-    public EncodedPolyline getBusLinePath() {
+    public List<LatLng> getBusLinePath() {
         return busLinePath;
     }
 
     public void setBusLinePath(EncodedPolyline busLinePath) {
-        this.busLinePath = busLinePath;
+        this.busLinePath = busLinePath.decodePath();
     }
 
     public LatLng getStartLocation() {

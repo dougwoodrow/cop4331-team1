@@ -7,6 +7,28 @@ Navbar
     color: #ccc
 }
 
+#bus-route-search-form {
+    justify-content: center;
+    align-items: center;
+
+    &, .form-row {
+        width: 100%;
+    }
+
+    .form-row {
+        margin: 0 auto;
+    }
+
+    input {
+        min-width: 200px;
+        max-width: 400px;
+    }
+
+    button {
+        width: 50px;
+    }
+}
+
 .jh-navbar {
     background-color: rgb(189,16,224);
     padding: .2em 1em;
