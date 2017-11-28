@@ -20,6 +20,56 @@ agm-map {
     background-size: contain;
 }
 
+#tracker {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+
+    color: #ffffff;
+    background-color: #bd10e0;
+    width: 300px;
+    min-height: 80px;
+    padding: 10px;
+}
+
+.yellow {
+    border: solid #ffc107 3px;
+}
+
+.red {
+    border: solid #dc3545 3px;
+}
+
+.green {
+    border: solid #28a745 3px;
+}
+
+.blue {
+    border: solid #17a2b8 3px;
+}
+
+.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4,end) 1.5s infinite;
+    animation: ellipsis steps(4,end) 1.5s infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1.25em;
+    }
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1.25em;
+    }
+}
+
 /* wait autoprefixer update to allow simple generation of high pixel density media query */
 @media
 only screen and (-webkit-min-device-pixel-ratio: 2),

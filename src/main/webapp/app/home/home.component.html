@@ -1,10 +1,27 @@
-<agm-map [latitude]="route.startLocation.lat" [longitude]="route.startLocation.lng" [zoom]="12">
+<agm-map [latitude]="route.startLocation.lat" [longitude]="route.startLocation.lng" [zoom]="12" [scrollwheel]="false">
     <agm-marker *ngIf="route.startAddress !== ''" [latitude]="route.startLocation.lat"
                 [longitude]="route.startLocation.lng"></agm-marker>
     <agm-marker *ngIf="route.endAddress !== ''" [latitude]="route.endLocation.lat"
                 [longitude]="route.endLocation.lng"></agm-marker>
-    <agm-polyline>
+    <agm-polyline strokeColor="#41f4f4" [strokeWeight]="3">
         <agm-polyline-point *ngFor="let point of route.busLinePath" [latitude]="point.lat" [longitude]="point.lng">
         </agm-polyline-point>
     </agm-polyline>
 </agm-map>
+
+<div id="tracker">
+    <div class="tracker-content">
+        <div class="no-route" *ngIf="!routeSet">
+            <p class="loading">To begin, input a route above and click Go</p>
+        </div>
+        <div class="route-ready" *ngIf="routeSet && !isTracking" (click)="startTracking()">
+            <p><strong>Arrival Time: </strong> {{ route.arrivalDateTime | date: 'mediumTime' }}</p>
+            <p><strong>Route Ready!</strong> Click here to start tracking.</p>
+        </div>
+        <div class="route-active" *ngIf="routeSet && isTracking" (dblclick)="stopTracking()">
+            <p id="countdown"></p>
+            <p>Double-click to stop tracking</p>
+        </div>
+        <div class="route-arriving"></div>
+    </div>
+</div>

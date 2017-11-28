@@ -1,8 +1,11 @@
 package edu.cop4331.bustracker.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.LatLng;
+import edu.cop4331.bustracker.service.mapper.CustomDateSerializer;
 import org.joda.time.DateTime;
+import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.List;
 
@@ -41,6 +44,7 @@ public class RouteDTO {
         this.fare = fare;
     }
 
+    @JsonSerialize(using = CustomDateSerializer.class)
     public DateTime getArrivalDateTime() {
         return arrivalDateTime;
     }
@@ -49,6 +53,7 @@ public class RouteDTO {
         this.arrivalDateTime = arrivalDateTime;
     }
 
+    @JsonSerialize(using = CustomDateSerializer.class)
     public DateTime getDepartureDateTime() {
         return departureDateTime;
     }

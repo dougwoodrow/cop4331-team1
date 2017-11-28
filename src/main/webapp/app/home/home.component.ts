@@ -6,6 +6,9 @@ import {Subscription} from 'rxjs/Subscription';
 import {RouteService} from '../shared/route/route.service';
 import {Route} from '../shared/route/route.model';
 
+declare var jquery: any;
+declare var $: any;
+
 @Component({
     selector: 'jhi-home',
     templateUrl: './home.component.html',
@@ -18,7 +21,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     account: Account;
     subscription: Subscription;
     route: Route = new Route();
-    point: any;
+    isTracking: boolean = false;
+    routeSet: boolean = false;
 
     constructor(private principal: Principal,
                 private loginService: LoginService,
@@ -28,13 +32,23 @@ export class HomeComponent implements OnInit, OnDestroy {
             lat: 28.5354336,
             lng: -81.4034221
         };
+
+        $('.jh-card').css("padding", "0");
     }
 
     ngOnInit() {
         this.principal.identity().then((account) => {
             this.account = account;
+
+            $("#tracker").removeClass();
+            $("#tracker").addClass("yellow");
+
             this.subscription = this.routeService.getRoute().subscribe(route => {
                 this.route = route;
+                this.routeSet = true;
+
+                $("#tracker").removeClass();
+                $("#tracker").addClass("blue");
             });
         });
         this.registerAuthenticationSuccess();
@@ -54,6 +68,47 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     login() {
         this.loginService.login();
+    }
+
+    startTracking() {
+        $("#tracker").removeClass();
+        $("#tracker").addClass("green");
+
+        var end = this.route.departureDateTime as any;
+        var _second = 1000;
+        var _minute = _second * 60;
+        var _hour = _minute * 60;
+        var _day = _hour * 24;
+        var timer;
+
+        function showRemaining() {
+            var now = new Date() as any;
+            var distance = end - now;
+            if (distance < 0) {
+                clearInterval(timer);
+                $('#countdown').html('Your bus is arriving!');
+                return;
+            }
+            var hours = Math.floor((distance % _day) / _hour);
+            var minutes = Math.floor((distance % _hour) / _minute);
+            var seconds = Math.floor((distance % _minute) / _second);
+
+            $('#countdown').html(hours + ' hrs ');
+            $('#countdown').html(minutes + ' mins ');
+            $('#countdown').html(seconds + ' secs');
+        }
+
+        timer = setInterval(showRemaining, 1000);
+
+        this.isTracking = true;
+    }
+
+    stopTracking() {
+        $("#tracker").removeClass();
+        $("#tracker").addClass("red");
+        this.route = new Route();
+        this.routeSet = false;
+        this.isTracking = false;
     }
 
     ngOnDestroy() {

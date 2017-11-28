@@ -27,6 +27,8 @@ export class RouteService {
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
         this.currentRoute = jsonResponse.data;
+        this.currentRoute.arrivalDateTime = new Date(this.currentRoute.arrivalDateTime);
+        this.currentRoute.departureDateTime = new Date(this.currentRoute.departureDateTime);
         this.subject.next(this.currentRoute);
         return new ResponseWrapper(res.headers, jsonResponse, res.status);
     }

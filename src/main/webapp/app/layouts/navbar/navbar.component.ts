@@ -27,6 +27,7 @@ export class NavbarComponent implements OnInit {
     };
     route: Route;
     subscription: Subscription;
+    stations: any[] = [];
 
     constructor(private loginService: LoginService,
                 private principal: Principal,
@@ -35,6 +36,7 @@ export class NavbarComponent implements OnInit {
                 private router: Router) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
+        this.stations.push({name: "Lynx - Palm Parkway and Central Florida Parkway", address: "Palm Parkway & Central Florida Parkway, Orlando, FL 32836"});
     }
 
     ngOnInit() {
@@ -66,6 +68,10 @@ export class NavbarComponent implements OnInit {
         this.collapseNavbar();
         this.loginService.logout();
         this.router.navigate(['']);
+    }
+
+    setStation(station: any) {
+        console.log(station);
     }
 
     toggleNavbar() {

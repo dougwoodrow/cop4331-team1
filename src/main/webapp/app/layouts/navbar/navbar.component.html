@@ -10,7 +10,8 @@
             <span class="navbar-version">{{version}}</span>
         </a>
     </div>
-    <form name="bus-route-search-form" id="bus-route-search-form" #busRouteSearchForm="ngForm" (ngSubmit)="searchRoute()">
+    <form name="bus-route-search-form" id="bus-route-search-form" #busRouteSearchForm="ngForm"
+          (ngSubmit)="searchRoute()">
         <div class="form-row">
             <div class="col">
                 <input name="to" [(ngModel)]="formData.to" class="form-control" placeholder="To">
@@ -34,6 +35,23 @@
                         <span>Home</span>
                     </span>
                 </a>
+            </li>
+            <li *jhiHasAnyAuthority="'ROLE_USER'" ngbDropdown class="nav-item dropdown pointer"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
+                    <i class="fa fa-bus" aria-hidden="true"></i>
+                    <span>
+                      Stations
+                    </span>
+                </a>
+                <ul class="dropdown-menu stations-menu dropdown-menu-right ml-auto" ngbDropdownMenu>
+                    <li *ngFor="let station of stations">
+                        <a class="dropdown-item" (click)="setStation(station)">
+                            <span>{{station.name}}</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li *jhiHasAnyAuthority="'ROLE_ADMIN'" ngbDropdown class="nav-item dropdown pointer"
                 routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">

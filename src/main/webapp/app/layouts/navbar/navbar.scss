@@ -29,6 +29,14 @@ Navbar
     }
 }
 
+#navbarResponsive > ul > li.nav-item.dropdown.pointer.show > ul {
+    width: 300px;
+}
+
+.stations-menu > li > a {
+    white-space: normal;
+}
+
 .jh-navbar {
     background-color: rgb(189,16,224);
     padding: .2em 1em;
