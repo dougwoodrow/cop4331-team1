@@ -5,6 +5,8 @@ import {Account, LoginService, Principal} from '../shared';
 import {Subscription} from 'rxjs/Subscription';
 import {RouteService} from '../shared/route/route.service';
 import {Route} from '../shared/route/route.model';
+import {StationService} from '../shared/station/station.service';
+import {Observable} from 'rxjs/Observable';
 
 declare var jquery: any;
 declare var $: any;
@@ -21,37 +23,47 @@ export class HomeComponent implements OnInit, OnDestroy {
     account: Account;
     subscription: Subscription;
     route: Route = new Route();
-    isTracking: boolean = false;
-    routeSet: boolean = true;
+    isTracking = false;
+    routeSet = true;
+    isStationSaved = false;
+    iconUrl = 'http://svgshare.com/i/45E.svg';
+    private _diff: number;
+    private _days: number;
+    private _hours: number;
+    private _minutes: number;
+    private _seconds: number;
 
     constructor(private principal: Principal,
                 private loginService: LoginService,
                 private routeService: RouteService,
+                private stationService: StationService,
                 private eventManager: JhiEventManager) {
         this.route.startLocation = this.route.endLocation = {
             lat: 28.5354336,
             lng: -81.4034221
         };
-        this.routeService.query({to: "12348 Golden Knight Circle", from: "12986 Mallory Circle"});
-        $('.jh-card').css("padding", "0");
+        $('.jh-card').css('padding', '0');
     }
 
     ngOnInit() {
+        $('#tracker').removeClass();
+        $('#tracker').addClass('yellow');
+
         this.principal.identity().then((account) => {
             this.account = account;
-
-            $("#tracker").removeClass();
-            $("#tracker").addClass("yellow");
-
-            this.subscription = this.routeService.getRoute().subscribe(route => {
-                this.route = route;
-                this.routeSet = true;
-
-                $("#tracker").removeClass();
-                $("#tracker").addClass("blue");
-            });
         });
         this.registerAuthenticationSuccess();
+
+        this.subscription = this.routeService.getRoute().subscribe((route) => {
+            this.route = route;
+            this.routeSet = true;
+            this.isTracking = false;
+            this.isStationSaved = false;
+
+            $('#tracker').removeClass();
+            $('#tracker').addClass('blue');
+        });
+        this.routeService.query({to: '12348 Golden Knight Circle', from: '12986 Mallory Circle'});
     }
 
     registerAuthenticationSuccess() {
@@ -71,31 +83,43 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     startTracking() {
-        $("#tracker").removeClass();
-        $("#tracker").addClass("green");
+        $('#tracker').removeClass();
+        $('#tracker').addClass('green');
 
-        var end = this.route.departureDateTime as any;
-        var _second = 1000;
-        var _minute = _second * 60;
-        var _hour = _minute * 60;
-        var _day = _hour * 24;
-        var timer;
+        const end = this.route.departureDateTime;
+        const _second = 1000;
+        const _minute = _second * 60;
+        const _hour = _minute * 60;
+        const _day = _hour * 24;
+        let timer;
 
         function showRemaining() {
-            var now = new Date() as any;
-            var distance = end - now;
-            if (distance < 0) {
-                clearInterval(timer);
-                $('#countdown').html('Your bus is arriving!');
-                return;
-            }
-            var hours = Math.floor((distance % _day) / _hour);
-            var minutes = Math.floor((distance % _hour) / _minute);
-            var seconds = Math.floor((distance % _minute) / _second);
 
-            $('#countdown').html(hours + ' hrs ');
-            $('#countdown').html(minutes + ' mins ');
-            $('#countdown').html(seconds + ' secs');
+            function getHours(t) {
+                return Math.floor((t / (1000 * 60 * 60)) % 24);
+            }
+
+            function getMinutes(t) {
+                return Math.floor((t / 1000 / 60) % 60);
+            }
+
+            function getSeconds(t) {
+                return Math.floor((t / 1000) % 60);
+            }
+
+            Observable.interval(1000).map((x) => {
+                this._diff = Date.parse(end.toDateString()) - Date.parse(new Date().toString());
+                console.log(this._diff);
+            }).subscribe((x) => {
+                this._hours = getHours(this._diff);
+                this._minutes = getMinutes(this._diff);
+                this._seconds = getSeconds(this._diff);
+                console.log(this._hours, this._minutes, this._seconds);
+            });
+
+            $('#countdown').html(this._hours + ' hrs ');
+            $('#countdown').html(this._minutes + ' mins ');
+            $('#countdown').html(this._seconds + ' secs');
         }
 
         timer = setInterval(showRemaining, 1000);
@@ -104,18 +128,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     stopTracking() {
-        $("#tracker").removeClass();
-        $("#tracker").addClass("red");
+        $('#tracker').removeClass();
+        $('#tracker').addClass('red');
         this.route = new Route();
         this.routeSet = false;
         this.isTracking = false;
+        this.isStationSaved = true;
     }
 
     saveStation() {
-
+        const stationAddress = this.route.startAddress;
+        this.stationService.createForUser(stationAddress).subscribe((station) => {
+            this.isStationSaved = true;
+        });
     }
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }
+
 }

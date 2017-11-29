@@ -1,10 +1,10 @@
 package edu.cop4331.bustracker.domain;
 
 import com.google.maps.model.LatLng;
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,20 +17,33 @@ public class Route extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column
     private DateTime arrivalDateTime;
 
+    @Column
     private DateTime departureDateTime;
 
+    @ElementCollection
     private List<LatLng> busLinePath;
 
+    @Column
     private LatLng startLocation;
 
+    @Column
     private LatLng endLocation;
 
+    @Column
     private String startAddress;
 
+    @Column
     private String endAddress;
 
+    @Column
     private String fare;
 
     public Route() {
@@ -45,6 +58,14 @@ public class Route extends AbstractAuditingEntity implements Serializable {
         this.startAddress = startAddress;
         this.endAddress = endAddress;
         this.fare = fare;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public DateTime getArrivalDateTime() {

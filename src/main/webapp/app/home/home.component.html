@@ -3,7 +3,8 @@
                 [longitude]="route.startLocation.lng"></agm-marker>
     <agm-marker *ngIf="route.endAddress !== ''" [latitude]="route.endLocation.lat"
                 [longitude]="route.endLocation.lng"></agm-marker>
-    <agm-polyline strokeColor="#41f4f4" [strokeWeight]="3">
+    <agm-marker *ngFor="let point of route.busLinePath" [latitude]="point.lat" [longitude]="point.lng" [iconUrl]="iconUrl"></agm-marker>
+    <agm-polyline strokeColor="#41f4f4" [strokeWeight]="5">
         <agm-polyline-point *ngFor="let point of route.busLinePath" [latitude]="point.lat" [longitude]="point.lng">
         </agm-polyline-point>
     </agm-polyline>
@@ -14,10 +15,12 @@
         <div class="no-route" *ngIf="!routeSet">
             <p class="loading">To begin, input a route above and click Go</p>
         </div>
-        <div class="route-ready" *ngIf="routeSet && !isTracking" (click)="startTracking()">
+        <div class="route-ready" *ngIf="routeSet && !isTracking">
             <p><strong>Arrival Time: </strong> {{ route.arrivalDateTime | date: 'mediumTime' }}</p>
             <p><strong>Route Ready!</strong> Click here to start tracking.</p>
-            <button class="btn btn-accent" *jhiHasAnyAuthority="'ROLE_USER'" (click)="saveStation()">Save this station for future</button>
+            <p><strong>Nearest Pick-up Location: </strong> {{ route.startAddress }}</p>
+            <button class="btn btn-primary" id="start-tracking" (click)="startTracking()">Start Tracking!</button>
+            <button class="btn btn-accent" *jhiHasAnyAuthority="'ROLE_USER'" [hidden]="isStationSaved" (click)="saveStation()">Save this station for future</button>
         </div>
         <div class="route-active" *ngIf="routeSet && isTracking" (dblclick)="stopTracking()">
             <p id="countdown"></p>

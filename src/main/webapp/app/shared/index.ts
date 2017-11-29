@@ -15,6 +15,8 @@ export * from './user/user.model';
 export * from './user/user.service';
 export * from './route/route.model';
 export * from './route/route.service';
+export * from './station/station.service';
+export * from './station/station.model';
 export * from './model/response-wrapper.model';
 export * from './model/request-util';
 export * from './model/base-entity';

@@ -2,8 +2,10 @@ package edu.cop4331.bustracker.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import edu.cop4331.bustracker.domain.Station;
+import edu.cop4331.bustracker.domain.User;
 import edu.cop4331.bustracker.repository.StationRepository;
 import edu.cop4331.bustracker.repository.UserRepository;
+import edu.cop4331.bustracker.security.SecurityUtils;
 import edu.cop4331.bustracker.service.GoogleMapsService;
 import edu.cop4331.bustracker.service.dto.ResponseDTO;
 import edu.cop4331.bustracker.service.dto.RouteDTO;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -34,37 +37,49 @@ public class StationResource {
     }
 
     /**
-     * GET  /stations/user/{userId} : get all stations for user.
+     * GET  /stations : get all stations for current logged in user.
      *
-     * @param userId
      * @return the ResponseEntity with status 200 (OK) and with an available route
      */
-    @GetMapping("/stations/user/{userId}")
+    @GetMapping("/stations")
     @Timed
-    public ResponseEntity<ResponseDTO> getStationsForUserId(@PathVariable Long userId) {
-        List<Station> stations = stationRepository.findAllByUserId(userId);
+    public ResponseEntity<ResponseDTO> getStationsForUserId() {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(stations);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> currentUser = this.userRepository.findOneByLogin(currentUserLogin);
+
+        if (currentUser.isPresent()) {
+            List<Station> stations = stationRepository.findAllByUserId(currentUser.get().getId());
+            responseDTO.setData(stations);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
     }
 
     /**
-     * POST  /routes : get all routes that meet criteria.
+     * POST  /stations : create a station for current logged in user.
      *
-     * @param forUserId
      * @param stationDTO
      * @return the ResponseEntity with status 200 (OK) and with an available route
      */
-    @PostMapping("/stations/user/{forUserId}")
+    @PostMapping("/stations")
     @Timed
-    public ResponseEntity<ResponseDTO> createStation(@PathVariable Long forUserId, @RequestBody StationDTO stationDTO) {
-        Station station = new Station();
-        station.setAddress(stationDTO.getAddress());
-        station.setUser(this.userRepository.findOne(forUserId));
-        station = this.stationRepository.save(station);
-
+    public ResponseEntity<ResponseDTO> createStation(@RequestBody StationDTO stationDTO) {
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(station);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        String currentUserLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> currentUser = this.userRepository.findOneByLogin(currentUserLogin);
+
+        if (currentUser.isPresent()) {
+            Station station = new Station();
+            station.setAddress(stationDTO.getAddress());
+            station.setUser(currentUser.get());
+            station = this.stationRepository.save(station);
+            responseDTO.setData(station);
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        }
     }
 }

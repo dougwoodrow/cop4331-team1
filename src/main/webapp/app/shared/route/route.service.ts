@@ -4,8 +4,8 @@ import {Observable} from 'rxjs/Rx';
 
 import {SERVER_API_URL} from '../../app.constants';
 import {ResponseWrapper} from '../model/response-wrapper.model';
-import {Route} from "./route.model";
-import {Subject} from "rxjs/Subject";
+import {Route} from './route.model';
+import {Subject} from 'rxjs/Subject';
 
 @Injectable()
 export class RouteService {

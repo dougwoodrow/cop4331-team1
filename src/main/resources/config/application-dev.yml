@@ -39,11 +39,13 @@ spring:
         database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
         database: MYSQL
         show-sql: true
+        generate-ddl: true
         properties:
             hibernate.id.new_generator_mappings: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
+            hibernate.ddl-auto: update
     mail:
         host: localhost
         port: 25

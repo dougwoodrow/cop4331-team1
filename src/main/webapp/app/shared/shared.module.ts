@@ -12,6 +12,7 @@ import {
     StateStorageService,
     RouteService,
     LoginService,
+    StationService,
     Principal,
     HasAnyAuthorityDirective,
 } from './';
@@ -33,6 +34,7 @@ import {
         AuthServerProvider,
         UserService,
         RouteService,
+        StationService,
         DatePipe
     ],
     exports: [

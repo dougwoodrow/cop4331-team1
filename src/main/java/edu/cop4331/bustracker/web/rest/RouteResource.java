@@ -58,7 +58,7 @@ public class RouteResource {
         route.setFare(routeDTO.getFare());
         route = this.routeRepository.save(route);
 
-        responseDTO.setData(route);
+        responseDTO.setData(routeDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 

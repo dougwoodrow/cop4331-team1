@@ -7,6 +7,7 @@ import {Principal, LoginService, RouteService} from '../../shared';
 import {VERSION} from '../../app.constants';
 import {Route} from '../../shared/route/route.model';
 import {Subscription} from 'rxjs/Subscription';
+import {StationService} from "../../shared/station/station.service";
 
 @Component({
     selector: 'jhi-navbar',
@@ -33,6 +34,7 @@ export class NavbarComponent implements OnInit {
                 private principal: Principal,
                 private profileService: ProfileService,
                 private routeService: RouteService,
+                private stationService: StationService,
                 private router: Router) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
@@ -44,9 +46,13 @@ export class NavbarComponent implements OnInit {
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
 
+        this.stationService.queryForUser().subscribe((stations) => {
+            this.stations = stations.json.data;
+        });
 
-
-        this.stations.push({name: "Lynx - Palm Parkway and Central Florida Parkway", address: "Palm Parkway & Central Florida Parkway, Orlando, FL 32836"});
+        this.subscription = this.stationService.getStation().subscribe((station) => {
+            this.stations.push(station);
+        });
     }
 
     collapseNavbar() {
