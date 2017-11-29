@@ -17,6 +17,7 @@
         <div class="route-ready" *ngIf="routeSet && !isTracking" (click)="startTracking()">
             <p><strong>Arrival Time: </strong> {{ route.arrivalDateTime | date: 'mediumTime' }}</p>
             <p><strong>Route Ready!</strong> Click here to start tracking.</p>
+            <button class="btn btn-accent" *jhiHasAnyAuthority="'ROLE_USER'" (click)="saveStation()">Save this station for future</button>
         </div>
         <div class="route-active" *ngIf="routeSet && isTracking" (dblclick)="stopTracking()">
             <p id="countdown"></p>

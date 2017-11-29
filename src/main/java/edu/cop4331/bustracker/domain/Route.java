@@ -1,20 +1,12 @@
 package edu.cop4331.bustracker.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.cop4331.bustracker.config.Constants;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.validator.constraints.Email;
+import com.google.maps.model.LatLng;
+import org.joda.time.DateTime;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 
 /**
  * A route.
@@ -25,152 +17,97 @@ public class Route extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private DateTime arrivalDateTime;
 
-    @NotNull
-    @Pattern(regexp = Constants.LOGIN_REGEX)
-    @Size(min = 1, max = 50)
-    @Column(length = 50, unique = true, nullable = false)
-    private String login;
+    private DateTime departureDateTime;
 
-    @Size(max = 50)
-    @Column(name = "first_name", length = 50)
-    private String firstName;
+    private List<LatLng> busLinePath;
 
-    @Size(max = 50)
-    @Column(name = "last_name", length = 50)
-    private String lastName;
+    private LatLng startLocation;
 
-    @Email
-    @Size(min = 5, max = 100)
-    @Column(length = 100, unique = true)
-    private String email;
+    private LatLng endLocation;
 
-    @NotNull
-    @Column(nullable = false)
-    private boolean activated = false;
+    private String startAddress;
 
-    @Size(min = 2, max = 6)
-    @Column(name = "lang_key", length = 6)
-    private String langKey;
+    private String endAddress;
 
-    @Size(max = 256)
-    @Column(name = "image_url", length = 256)
-    private String imageUrl;
+    private String fare;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "jhi_user_authority",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
-
-    @BatchSize(size = 20)
-    private Set<Authority> authorities = new HashSet<>();
-
-    public Long getId() {
-        return id;
+    public Route() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Route(DateTime arrivalDateTime, DateTime departureDateTime, List<LatLng> busLinePath, LatLng startLocation, LatLng endLocation, String startAddress, String endAddress, String fare) {
+        this.arrivalDateTime = arrivalDateTime;
+        this.departureDateTime = departureDateTime;
+        this.busLinePath = busLinePath;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
+        this.fare = fare;
     }
 
-    public String getLogin() {
-        return login;
+    public DateTime getArrivalDateTime() {
+        return arrivalDateTime;
     }
 
-    //Lowercase the login before saving it in database
-    public void setLogin(String login) {
-        this.login = StringUtils.lowerCase(login, Locale.ENGLISH);
+    public void setArrivalDateTime(DateTime arrivalDateTime) {
+        this.arrivalDateTime = arrivalDateTime;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public DateTime getDepartureDateTime() {
+        return departureDateTime;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setDepartureDateTime(DateTime departureDateTime) {
+        this.departureDateTime = departureDateTime;
     }
 
-    public String getLastName() {
-        return lastName;
+    public List<LatLng> getBusLinePath() {
+        return busLinePath;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setBusLinePath(List<LatLng> busLinePath) {
+        this.busLinePath = busLinePath;
     }
 
-    public String getEmail() {
-        return email;
+    public LatLng getStartLocation() {
+        return startLocation;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setStartLocation(LatLng startLocation) {
+        this.startLocation = startLocation;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public LatLng getEndLocation() {
+        return endLocation;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setEndLocation(LatLng endLocation) {
+        this.endLocation = endLocation;
     }
 
-    public boolean getActivated() {
-        return activated;
+    public String getStartAddress() {
+        return startAddress;
     }
 
-    public void setActivated(boolean activated) {
-        this.activated = activated;
+    public void setStartAddress(String startAddress) {
+        this.startAddress = startAddress;
     }
 
-    public String getLangKey() {
-        return langKey;
+    public String getEndAddress() {
+        return endAddress;
     }
 
-    public void setLangKey(String langKey) {
-        this.langKey = langKey;
+    public void setEndAddress(String endAddress) {
+        this.endAddress = endAddress;
     }
 
-    public Set<Authority> getAuthorities() {
-        return authorities;
+    public String getFare() {
+        return fare;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Route user = (Route) o;
-        return !(user.getId() == null || getId() == null) && Objects.equals(getId(), user.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated='" + activated + '\'' +
-            ", langKey='" + langKey + '\'' +
-            "}";
+    public void setFare(String fare) {
+        this.fare = fare;
     }
 }

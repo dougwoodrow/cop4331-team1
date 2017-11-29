@@ -1,6 +1,8 @@
 package edu.cop4331.bustracker.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import edu.cop4331.bustracker.domain.Route;
+import edu.cop4331.bustracker.repository.RouteRepository;
 import edu.cop4331.bustracker.service.GoogleMapsService;
 import edu.cop4331.bustracker.service.dto.ResponseDTO;
 import edu.cop4331.bustracker.service.dto.RouteDTO;
@@ -25,6 +27,9 @@ public class RouteResource {
     @Inject
     private GoogleMapsService googleMapsService;
 
+    @Inject
+    private RouteRepository routeRepository;
+
     public RouteResource(GoogleMapsService googleMapsService) {
         this.googleMapsService = googleMapsService;
     }
@@ -41,7 +46,19 @@ public class RouteResource {
     public ResponseEntity<ResponseDTO> getRoute(@ApiParam String to, @ApiParam String from) {
         RouteDTO routeDTO = googleMapsService.getBusRoute(to, from);
         ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setData(routeDTO);
+
+        Route route = new Route();
+        route.setArrivalDateTime(routeDTO.getArrivalDateTime());
+        route.setBusLinePath(routeDTO.getBusLinePath());
+        route.setDepartureDateTime(routeDTO.getDepartureDateTime());
+        route.setStartAddress(routeDTO.getStartAddress());
+        route.setStartLocation(routeDTO.getStartLocation());
+        route.setEndAddress(routeDTO.getEndAddress());
+        route.setEndLocation(routeDTO.getEndLocation());
+        route.setFare(routeDTO.getFare());
+        route = this.routeRepository.save(route);
+
+        responseDTO.setData(route);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 

@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     subscription: Subscription;
     route: Route = new Route();
     isTracking: boolean = false;
-    routeSet: boolean = false;
+    routeSet: boolean = true;
 
     constructor(private principal: Principal,
                 private loginService: LoginService,
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             lat: 28.5354336,
             lng: -81.4034221
         };
-
+        this.routeService.query({to: "12348 Golden Knight Circle", from: "12986 Mallory Circle"});
         $('.jh-card').css("padding", "0");
     }
 
@@ -109,6 +109,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.route = new Route();
         this.routeSet = false;
         this.isTracking = false;
+    }
+
+    saveStation() {
+
     }
 
     ngOnDestroy() {

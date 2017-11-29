@@ -22,8 +22,8 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     version: string;
     formData: any = {
-        from: '',
-        to: ''
+        from: '12348 Golden Knight Circle',
+        to: '12986 Mallory Circle'
     };
     route: Route;
     subscription: Subscription;
@@ -36,7 +36,6 @@ export class NavbarComponent implements OnInit {
                 private router: Router) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
-        this.stations.push({name: "Lynx - Palm Parkway and Central Florida Parkway", address: "Palm Parkway & Central Florida Parkway, Orlando, FL 32836"});
     }
 
     ngOnInit() {
@@ -44,6 +43,10 @@ export class NavbarComponent implements OnInit {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
+
+
+
+        this.stations.push({name: "Lynx - Palm Parkway and Central Florida Parkway", address: "Palm Parkway & Central Florida Parkway, Orlando, FL 32836"});
     }
 
     collapseNavbar() {
