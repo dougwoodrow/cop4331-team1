@@ -23,8 +23,8 @@ export class NavbarComponent implements OnInit {
     swaggerEnabled: boolean;
     version: string;
     formData: any = {
-        from: '12348 Golden Knight Circle',
-        to: '12986 Mallory Circle'
+        to: '12348 Golden Knight Circle',
+        from: '1 Orange Ave'
     };
     route: Route;
     subscription: Subscription;
@@ -80,7 +80,7 @@ export class NavbarComponent implements OnInit {
     }
 
     setStation(station: any) {
-        console.log(station);
+        this.formData.from = station.address;
     }
 
     toggleNavbar() {

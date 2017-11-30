@@ -12,6 +12,10 @@ agm-map {
     margin-bottom: 10px;
 }
 
+agm-marker {
+    max-width: 50px;
+}
+
 .jh-card {
     padding: 0 !important;
 }
@@ -22,6 +26,11 @@ agm-map {
     height: 497px;
     background: url("../../content/images/hipster.png") no-repeat center top;
     background-size: contain;
+}
+
+#countdown {
+    font-size: 24px;
+    font-weight: 500;
 }
 
 #tracker {

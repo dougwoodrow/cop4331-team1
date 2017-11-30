@@ -14,13 +14,13 @@
           (ngSubmit)="searchRoute()">
         <div class="form-row">
             <div class="col">
-                <input name="to" [(ngModel)]="formData.to" class="form-control" placeholder="To">
-            </div>
-            <div class="col">
                 <input name="from" [(ngModel)]="formData.from" class="form-control" placeholder="From">
             </div>
             <div class="col">
-                <button type="submit" class="btn btn-primary">Go</button>
+                <input name="to" [(ngModel)]="formData.to" class="form-control" placeholder="To">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-accent">Go</button>
             </div>
         </div>
     </form>

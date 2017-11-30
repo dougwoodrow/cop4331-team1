@@ -24,14 +24,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     subscription: Subscription;
     route: Route = new Route();
     isTracking = false;
-    routeSet = true;
+    routeSet = false;
     isStationSaved = false;
-    iconUrl = 'http://svgshare.com/i/45E.svg';
-    private _diff: number;
-    private _days: number;
-    private _hours: number;
-    private _minutes: number;
-    private _seconds: number;
+    iconUrl = 'https://i.imgur.com/Wls8QkC.png';
+    timer: Subscription;
 
     constructor(private principal: Principal,
                 private loginService: LoginService,
@@ -59,6 +55,14 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.routeSet = true;
             this.isTracking = false;
             this.isStationSaved = false;
+            this.route.busLinePath.map((pathPoint) => {
+                pathPoint.isVisible = false;
+            });
+            try {
+                this.timer.unsubscribe();
+            } catch (te) {
+               console.debug('Not subscribed yet...waiting.');
+            }
 
             $('#tracker').removeClass();
             $('#tracker').addClass('blue');
@@ -85,46 +89,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     startTracking() {
         $('#tracker').removeClass();
         $('#tracker').addClass('green');
-
-        const end = this.route.departureDateTime;
-        const _second = 1000;
-        const _minute = _second * 60;
-        const _hour = _minute * 60;
-        const _day = _hour * 24;
-        let timer;
-
-        function showRemaining() {
-
-            function getHours(t) {
-                return Math.floor((t / (1000 * 60 * 60)) % 24);
-            }
-
-            function getMinutes(t) {
-                return Math.floor((t / 1000 / 60) % 60);
-            }
-
-            function getSeconds(t) {
-                return Math.floor((t / 1000) % 60);
-            }
-
-            Observable.interval(1000).map((x) => {
-                this._diff = Date.parse(end.toDateString()) - Date.parse(new Date().toString());
-                console.log(this._diff);
-            }).subscribe((x) => {
-                this._hours = getHours(this._diff);
-                this._minutes = getMinutes(this._diff);
-                this._seconds = getSeconds(this._diff);
-                console.log(this._hours, this._minutes, this._seconds);
-            });
-
-            $('#countdown').html(this._hours + ' hrs ');
-            $('#countdown').html(this._minutes + ' mins ');
-            $('#countdown').html(this._seconds + ' secs');
-        }
-
-        timer = setInterval(showRemaining, 1000);
-
+        const departureTime = this.route.departureDateTime;
         this.isTracking = true;
+        this.startTicking(departureTime, this.route);
     }
 
     stopTracking() {
@@ -134,6 +101,60 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.routeSet = false;
         this.isTracking = false;
         this.isStationSaved = true;
+        this.timer.unsubscribe();
+    }
+
+    private startTicking(departureTime: Date, route: any) {
+        let step: number;
+        let hours: number;
+        let minutes: number;
+        let seconds: number;
+        let timeElapsed: number;
+        let timeDifference: number;
+        let lengthOfPath: number;
+        let currentIndex = 0;
+        let originalTimeEstimate = 0;
+
+        let fakeDate = new Date();
+        fakeDate.setSeconds(fakeDate.getSeconds() + 30);
+        departureTime = fakeDate;
+
+        timeDifference = originalTimeEstimate = Date.parse(departureTime.toString()) - Date.parse(new Date().toString());
+        hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+        minutes = Math.floor((timeDifference / 1000 / 60) % 60);
+        seconds = Math.floor((timeDifference / 1000) % 60);
+        timeElapsed = (hours * 3600) + (minutes * 60) + seconds;
+        lengthOfPath = route.busLinePath.length;
+        step = lengthOfPath / timeElapsed;
+
+        this.timer = Observable.interval(1000).map((x) => {
+            if (timeElapsed === 1) {
+                this.timer.unsubscribe();
+            }
+
+            timeDifference = Date.parse(departureTime.toString()) - Date.parse(new Date().toString());
+            timeElapsed = (hours * 3600) + (minutes * 60) + seconds;
+            route.busLinePath.forEach((pathPoint, key) => {
+                if (key > 0 && key === Number.parseInt(currentIndex.toFixed(0))) {
+                    pathPoint.isVisible = true;
+                } else if (pathPoint.isVisible = true) {
+                    pathPoint.isVisible = false;
+                }
+            });
+
+            if (hours === undefined || minutes === undefined || seconds === undefined) {
+                $('#countdown').html('Calculating time remaining');
+            } else if(hours === 0 && minutes === 0 && seconds === 0) {
+                $('#countdown').html('Your bus has arrived!');
+            } else {
+                $('#countdown').html(hours + ' hrs ' + minutes + ' mins ' + seconds + ' secs');
+            }
+            currentIndex += step;
+        }).subscribe((x) => {
+            hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+            minutes = Math.floor((timeDifference / 1000 / 60) % 60);
+            seconds = Math.floor((timeDifference / 1000) % 60);
+        });
     }
 
     saveStation() {
